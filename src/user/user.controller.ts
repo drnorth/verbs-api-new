@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { getConnection, Connection } from "typeorm";
 import { UserService } from "./user.service";
 import httpStatus from "http-status";
 import ApiError from "utils/ApiError";
