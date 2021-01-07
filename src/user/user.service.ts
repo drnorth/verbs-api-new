@@ -1,6 +1,4 @@
 import { getRepository } from "typeorm";
-import { NextFunction, Request, Response } from "express";
-import { getConnection, Connection } from "typeorm";
 import { User } from "./user.entity";
 import ApiError from "utils/ApiError";
 import httpStatus from "http-status";

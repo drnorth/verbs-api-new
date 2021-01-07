@@ -12,7 +12,7 @@ export class UserController {
   static async one(req: Request, res: Response, next: NextFunction) {
     const user = await new UserService().one(req.params.id);
     if (!user) {
-      return next(new ApiError(httpStatus.NOT_FOUND, "User not found"));
+      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
     return res.send(user);
   }
@@ -23,11 +23,7 @@ export class UserController {
   }
 
   static async remove(req: Request, res: Response, next: NextFunction) {
-    try {
-      await new UserService().remove(req.params.id);
-      return res.status(httpStatus.NO_CONTENT).send(true);
-    } catch (e) {
-      return next(e);
-    }
+    await new UserService().remove(req.params.id);
+    return res.status(httpStatus.NO_CONTENT).send(true);
   }
 }

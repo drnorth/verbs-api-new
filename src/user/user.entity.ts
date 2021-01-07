@@ -21,7 +21,7 @@ export class User extends BaseEntity {
   salt?: string;
 
   @Column({ default: "RU-ru" })
-  lang: string;
+  lang?: string;
 
   @Column({ default: false })
   premium?: boolean;
