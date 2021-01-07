@@ -1,16 +1,40 @@
-import { Router } from "express";
 import { VerbController } from "./verb.controller";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/verbs",
+  controller: VerbController,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "getAll",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "addVerb",
+    },
+    {
+      method: "get",
+      route: "/init",
+      action: "initial",
+    },
+    {
+      method: "get",
+      route: "/:id",
+      action: "findVerb",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "updateVerb",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "deleteVerb",
+    },
+  ],
+};
 
-router.route("/").get(VerbController.getAll).post(VerbController.addVerb);
-
-router.route("/init").get(VerbController.initial);
-
-router
-  .route("/:id")
-  .get(VerbController.findVerb)
-  .put(VerbController.updateVerb)
-  .delete(VerbController.deleteVerb);
-
-export default router;
+export default Routes;

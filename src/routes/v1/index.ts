@@ -5,8 +5,20 @@ import lessonRouter from "lessons/lessons.route.v1";
 
 const router = Router();
 
-router.use("/user", userRouter);
-router.use("/verbs", verbRouter);
-router.use("/lessons", lessonRouter);
+const allRoutes = [];
+
+allRoutes.push(userRouter, verbRouter, lessonRouter);
+
+allRoutes.forEach((route) => {
+  router.use(
+    route.mainRoute,
+    route.subRoutes.reduce((acc: any, subRoute) => {
+      acc
+        .route(subRoute.route)
+        [subRoute.method]((route.controller as any)[subRoute.action]);
+      return acc;
+    }, Router())
+  );
+});
 
 export default router;

@@ -1,10 +1,30 @@
-import { Router } from "express";
 import { UserController } from "./user.controller";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/users",
+  controller: UserController,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "all",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "save",
+    },
+    {
+      method: "get",
+      route: "/:id",
+      action: "one",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "remove",
+    },
+  ],
+};
 
-router.route("/").get(UserController.all).post(UserController.save);
-
-router.route("/:id").get(UserController.one).delete(UserController.remove);
-
-export default router;
+export default Routes;

@@ -1,24 +1,51 @@
-import { Router } from "express";
 import { LessonsController } from "./lessons.controller";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/lessons",
+  controller: LessonsController,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "getAllLessons",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "createLesson",
+    },
+    {
+      method: "get",
+      route: "/init",
+      action: "initialLeassons",
+    },
+    {
+      method: "post",
+      route: "/:id/questions/result",
+      action: "removeLesson",
+    },
+    {
+      method: "get",
+      route: "/questions",
+      action: "getQuestions",
+    },
+    {
+      method: "delete",
+      route: "/questions/:id",
+      action: "removeQuestion",
+    },
 
-router
-  .route("/")
-  .get(LessonsController.getAllLessons)
-  .post(LessonsController.createLesson);
+    {
+      method: "get",
+      route: "/:id",
+      action: "getLesson",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "removeLesson",
+    },
+  ],
+};
 
-router.route("/init").get(LessonsController.initialLeassons);
-
-router.route("/:id/questions/result").post(LessonsController.setResult);
-
-router.route("/questions").get(LessonsController.getQuestions);
-
-router.route("/questions/:id").delete(LessonsController.removeQuestion);
-
-router
-  .route("/:id")
-  .get(LessonsController.getLesson)
-  .delete(LessonsController.removeLesson);
-
-export default router;
+export default Routes;
