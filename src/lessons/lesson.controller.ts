@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { LessonsService } from "./lessons.service";
+import { LessonsService } from "./lesson.service";
 import httpStatus from "http-status";
 import ApiError from "utils/ApiError";
 
