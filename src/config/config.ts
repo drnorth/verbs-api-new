@@ -26,6 +26,13 @@ export default {
   appConfig: {
     env: process.env.NODE_ENV || "dev",
     port: process.env.APP_PORT || 8000,
+    loginSalt: process.env.LOGIN_SALT || "abc123",
+  },
+  jwtConfig: {
+    secret: process.env.SECRET || "",
+    accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES,
+    refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS,
+    resetPasswordExpirationMinutes: 10,
   },
   baseConfig,
 };

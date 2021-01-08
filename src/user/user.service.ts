@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import { getRepository, FindConditions } from "typeorm";
 import { User } from "./user.entity";
 import ApiError from "utils/ApiError";
 import httpStatus from "http-status";
@@ -10,8 +10,12 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async one(id: string) {
-    return this.userRepository.findOne(id);
+  async count(options: FindConditions<User>) {
+    return this.userRepository.count(options);
+  }
+
+  async one(id: string | FindConditions<User>) {
+    return this.userRepository.findOne(id as any);
   }
 
   async save(body: User) {

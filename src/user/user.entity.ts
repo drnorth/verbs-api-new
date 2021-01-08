@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import bcrypt from "bcrypt";
 
 @Entity()
 export class User extends BaseEntity {
@@ -25,4 +26,11 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   premium?: boolean;
+
+  @Column({ default: false })
+  isAutoCreated?: boolean;
+
+  isPasswordMatch(password: string) {
+    return bcrypt.compare(password, this.password as string);
+  }
 }
