@@ -12,10 +12,6 @@ router.route("/init").get(LessonsController.initialLeassons);
 
 router.route("/:id/questions/result").post(LessonsController.setResult);
 
-router.route("/questions").get(LessonsController.getQuestions);
-
-router.route("/questions/:id").delete(LessonsController.removeQuestion);
-
 router
   .route("/:id")
   .get(LessonsController.getLesson)

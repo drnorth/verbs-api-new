@@ -57,3 +57,10 @@ export interface ICreateQuestion {
   answerType: AnswerType;
   verb: string;
 }
+
+export interface IUpdateQuestion {
+  title?: string;
+  type?: QuestionType;
+  answerType?: AnswerType;
+  verb?: string;
+}

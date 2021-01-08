@@ -6,8 +6,8 @@ import {
   ManyToOne,
   RelationId,
 } from "typeorm";
-import { QuestionType, AnswerType } from "../interfaces/common.types";
-import { Lesson } from "./lesson.entity";
+import { QuestionType, AnswerType } from "types.common/lessons.types";
+import { Lesson } from "../lessons/lesson.entity";
 
 @Entity()
 export class Question {

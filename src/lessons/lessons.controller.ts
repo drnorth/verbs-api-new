@@ -38,24 +38,6 @@ export class LessonsController {
     });
   }
 
-  static async getQuestions(req: Request, res: Response, next: NextFunction) {
-    const questions = await new LessonsService().findAllQuestions();
-
-    return res.status(httpStatus.OK).json(questions);
-  }
-
-  static async removeQuestion(req: Request, res: Response, next: NextFunction) {
-    const response = await new LessonsService().removeQuestion(
-      Number(req.params.id)
-    );
-
-    if (!response) throw new ApiError(httpStatus.NOT_FOUND, "Not found");
-
-    return res.status(httpStatus.OK).json({
-      message: "Question has been deleted",
-    });
-  }
-
   static async getLesson(req: Request, res: Response, next: NextFunction) {
     const lesson = await new LessonsService().findByIdLesson(
       Number(req.params.id)
