@@ -62,7 +62,12 @@ export class LessonsService {
   }
 
   async deleteLesson(id: number): Promise<any> {
-    return await this.lessonRepository.delete(id);
+    const lesson = await this.lessonRepository.findOne(id);
+
+    if (!lesson) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Not found");
+    }
+    return await this.lessonRepository.remove(lesson);
   }
 
   async createLesson(createLesson: ICreateLesson): Promise<any> {

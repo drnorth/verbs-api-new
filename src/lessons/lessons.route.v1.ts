@@ -1,24 +1,61 @@
-import { Router } from "express";
 import { LessonsController } from "./lessons.controller";
+import { LessonValidator } from "./lesson.validation";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/lessons",
+  controller: LessonsController,
+  validator: LessonValidator,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "getAllLessons",
+      validate: "emptyValidation",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "createLesson",
+      validate: "emptyValidation",
+    },
+    {
+      method: "get",
+      route: "/init",
+      action: "initialLeassons",
+      validate: "emptyValidation",
+    },
+    {
+      method: "post",
+      route: "/:id/questions/result",
+      action: "removeLesson",
+      validate: "emptyValidation",
+    },
+    {
+      method: "get",
+      route: "/questions",
+      action: "getQuestions",
+      validate: "emptyValidation",
+    },
+    {
+      method: "delete",
+      route: "/questions/:id",
+      action: "removeQuestion",
+      validate: "emptyValidation",
+    },
 
-router
-  .route("/")
-  .get(LessonsController.getAllLessons)
-  .post(LessonsController.createLesson);
+    {
+      method: "get",
+      route: "/:id",
+      action: "getLesson",
+      validate: "emptyValidation",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "removeLesson",
+      validate: "emptyValidation",
+    },
+  ],
+};
 
-router.route("/init").get(LessonsController.initialLeassons);
-
-router.route("/:id/questions/result").post(LessonsController.setResult);
-
-router.route("/questions").get(LessonsController.getQuestions);
-
-router.route("/questions/:id").delete(LessonsController.removeQuestion);
-
-router
-  .route("/:id")
-  .get(LessonsController.getLesson)
-  .delete(LessonsController.removeLesson);
-
-export default router;
+export default Routes;

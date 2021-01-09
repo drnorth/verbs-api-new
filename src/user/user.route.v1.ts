@@ -1,10 +1,42 @@
-import { Router } from "express";
 import { UserController } from "./user.controller";
+import { UserValidator } from "./user.validation";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/users",
+  controller: UserController,
+  validator: UserValidator,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "all",
+      validate: "emptyValidation",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "save",
+      validate: "add",
+    },
+    {
+      method: "get",
+      route: "/:id",
+      action: "one",
+      validate: "emptyValidation",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "update",
+      validate: "emptyValidation",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "remove",
+      validate: "emptyValidation",
+    },
+  ],
+};
 
-router.route("/").get(UserController.all).post(UserController.save);
-
-router.route("/:id").get(UserController.one).delete(UserController.remove);
-
-export default router;
+export default Routes;

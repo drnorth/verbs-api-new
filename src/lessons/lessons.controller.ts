@@ -67,14 +67,8 @@ export class LessonsController {
   }
 
   static async removeLesson(req: Request, res: Response, next: NextFunction) {
-    const response = await new LessonsService().deleteLesson(
-      Number(req.params.id)
-    );
+    await new LessonsService().deleteLesson(Number(req.params.id));
 
-    if (!response) throw new ApiError(httpStatus.NOT_FOUND, "Not found");
-
-    return res.status(httpStatus.OK).json({
-      message: "Lesson has been deleted",
-    });
+    return res.status(httpStatus.NO_CONTENT).send(true);
   }
 }
