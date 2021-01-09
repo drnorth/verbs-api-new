@@ -10,18 +10,24 @@ const Routes = {
       method: "get",
       route: "/",
       action: "all",
-      validate: "add",
+      validate: "emptyValidation",
     },
     {
       method: "post",
       route: "/",
       action: "save",
-      validate: "emptyValidation",
+      validate: "add",
     },
     {
       method: "get",
       route: "/:id",
       action: "one",
+      validate: "emptyValidation",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "update",
       validate: "emptyValidation",
     },
     {

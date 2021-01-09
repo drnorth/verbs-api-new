@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Roles } from "types.common/roles.types";
 import bcrypt from "bcrypt";
 
 @Entity()
@@ -15,10 +16,10 @@ export class User extends BaseEntity {
   @Column({ default: "" })
   email?: string;
 
-  @Column({ default: "" })
+  @Column({ default: "", select: false })
   password?: string;
 
-  @Column({ default: "" })
+  @Column({ default: "", select: false })
   salt?: string;
 
   @Column({ default: "RU-ru" })
@@ -29,6 +30,13 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   isAutoCreated?: boolean;
+
+  @Column({
+    type: "enum",
+    enum: Roles,
+    default: Roles.USER,
+  })
+  role: Roles;
 
   isPasswordMatch(password: string) {
     return bcrypt.compare(password, this.password as string);

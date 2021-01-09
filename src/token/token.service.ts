@@ -1,4 +1,4 @@
-import { getRepository } from "typeorm";
+import { getRepository, FindConditions } from "typeorm";
 import jwt from "jsonwebtoken";
 import dayjs, { Dayjs } from "dayjs";
 import httpStatus from "http-status";
@@ -43,12 +43,15 @@ export class TokenService {
 
   async verifyToken(token: string, type: TypesToken) {
     const payload: any = jwt.verify(token, config.jwtConfig.secret);
-    const tokenDoc = await this.tokenRepository.findOne({
-      token,
-      type,
-      user: payload.sub,
-      blacklisted: false,
-    });
+    const tokenDoc = await this.tokenRepository.findOne(
+      {
+        token,
+        type,
+        user: payload.sub,
+        blacklisted: false,
+      },
+      { relations: ["user"] }
+    );
     if (!tokenDoc) {
       throw new ApiError(httpStatus.NOT_FOUND, "Token not found");
     }
@@ -84,12 +87,14 @@ export class TokenService {
 
   async generateResetPasswordToken(id: string) {
     const user = await new UserService().one(id);
+
     if (!user) {
       throw new ApiError(
         httpStatus.NOT_FOUND,
         "No users found with this email"
       );
     }
+
     const expires = dayjs().add(
       config.jwtConfig.resetPasswordExpirationMinutes,
       "m"
@@ -102,5 +107,13 @@ export class TokenService {
       "RESET_PASSWORD"
     );
     return resetPasswordToken;
+  }
+
+  async getToken(options: FindConditions<Token>) {
+    return this.tokenRepository.findOne(options);
+  }
+
+  async deleteManyTokens(options: FindConditions<Token>) {
+    return this.tokenRepository.delete(options);
   }
 }

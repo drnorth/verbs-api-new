@@ -26,4 +26,9 @@ export class UserController {
     await new UserService().remove(req.params.id);
     return res.status(httpStatus.NO_CONTENT).send(true);
   }
+
+  static async update(req: Request, res: Response, next: NextFunction) {
+    const user = await new UserService().update(req.params.id, req.body);
+    return res.send(user);
+  }
 }
