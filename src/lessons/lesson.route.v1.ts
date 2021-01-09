@@ -1,7 +1,12 @@
 import { LessonsController } from "./lesson.controller";
 import { LessonValidator } from "./lesson.validation";
+import { IRoute } from "types.common/route.types";
 
-const Routes = {
+const Routes: IRoute<
+  typeof LessonsController,
+  typeof LessonValidator,
+  LessonValidator
+> = {
   mainRoute: "/lessons",
   controller: LessonsController,
   validator: LessonValidator,

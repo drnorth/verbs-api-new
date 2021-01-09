@@ -1,7 +1,12 @@
+import { IRouteStructure } from "types.common/route.types";
 import { QuestionController } from "./question.controller";
 import { QuestionValidator } from "./question.validation";
 
-const Routes = {
+const Routes: IRouteStructure<
+  typeof QuestionController,
+  typeof QuestionValidator,
+  QuestionValidator
+> = {
   mainRoute: "/questions",
   controller: QuestionController,
   validator: QuestionValidator,

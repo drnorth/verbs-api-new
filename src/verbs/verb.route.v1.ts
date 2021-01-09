@@ -1,7 +1,12 @@
+import { IRouteStructure } from "types.common/route.types";
 import { VerbController } from "./verb.controller";
 import { VerbValidator } from "./verb.validation";
 
-const Routes = {
+const Routes: IRouteStructure<
+  typeof VerbController,
+  typeof VerbValidator,
+  VerbValidator
+> = {
   mainRoute: "/verbs",
   controller: VerbController,
   validator: VerbValidator,
