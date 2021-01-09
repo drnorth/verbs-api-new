@@ -1,17 +1,42 @@
-import { Router } from "express";
 import { QuestionController } from "./question.controller";
+import { QuestionValidator } from "./question.validation";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/questions",
+  controller: QuestionController,
+  validator: QuestionValidator,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "getQuestions",
+      validate: "emptyValidation",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "createQuestion",
+      validate: "emptyValidation",
+    },
+    {
+      method: "get",
+      route: "/:id",
+      action: "getQuestion",
+      validate: "emptyValidation",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "updateQuestion",
+      validate: "emptyValidation",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "removeQuestion",
+      validate: "emptyValidation",
+    },
+  ],
+};
 
-router
-  .route("/")
-  .get(QuestionController.getQuestions)
-  .post(QuestionController.createQuestion);
-
-router
-  .route("/:id")
-  .get(QuestionController.getQuestion)
-  .put(QuestionController.updateQuestion)
-  .delete(QuestionController.removeQuestion);
-
-export default router;
+export default Routes;

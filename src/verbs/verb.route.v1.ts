@@ -1,16 +1,48 @@
-import { Router } from "express";
 import { VerbController } from "./verb.controller";
+import { VerbValidator } from "./verb.validation";
 
-const router = Router();
+const Routes = {
+  mainRoute: "/verbs",
+  controller: VerbController,
+  validator: VerbValidator,
+  subRoutes: [
+    {
+      method: "get",
+      route: "/",
+      action: "getAll",
+      validate: "emptyValidation",
+    },
+    {
+      method: "post",
+      route: "/",
+      action: "addVerb",
+      validate: "emptyValidation",
+    },
+    {
+      method: "get",
+      route: "/init",
+      action: "initial",
+      validate: "emptyValidation",
+    },
+    {
+      method: "get",
+      route: "/:id",
+      action: "findVerb",
+      validate: "emptyValidation",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "updateVerb",
+      validate: "emptyValidation",
+    },
+    {
+      method: "delete",
+      route: "/:id",
+      action: "deleteVerb",
+      validate: "emptyValidation",
+    },
+  ],
+};
 
-router.route("/").get(VerbController.getAll).post(VerbController.addVerb);
-
-router.route("/init").get(VerbController.initial);
-
-router
-  .route("/:id")
-  .get(VerbController.findVerb)
-  .put(VerbController.updateVerb)
-  .delete(VerbController.deleteVerb);
-
-export default router;
+export default Routes;
