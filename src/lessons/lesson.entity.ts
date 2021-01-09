@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { Difficult } from "types.common/verbs.types";
-import { QuestionAction } from "../interfaces/common.types";
+import { QuestionAction } from "types.common/lessons.types";
 
 @Entity()
 export class Lesson {

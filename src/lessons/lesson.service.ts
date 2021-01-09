@@ -1,33 +1,31 @@
 import { getRepository } from "typeorm";
-import { Lesson, Question } from "./entities";
+import { Lesson } from "./lesson.entity";
 import {
   ILesson,
   ICreateLesson,
   IGetResulLesson,
   IQuestion,
   QuestionAction,
-  ICreateQuestion,
   QuestionType,
   AnswerType,
-} from "./interfaces/common.types";
+} from "types.common/lessons.types";
+import { Difficult, IVerb } from "types.common/verbs.types";
 import ApiError from "utils/ApiError";
 import httpStatus from "http-status";
 import { generateLessons, generateQuestions } from "./utils";
+import { QuestionService } from "questions/question.service";
 import { Verb } from "verbs/verb.entity";
-import { Difficult, IVerb } from "types.common/verbs.types";
-import { TestStatistics } from "./entities/test-statistics.entity";
 
 export class LessonsService {
   private lessonRepository = getRepository(Lesson);
   private verbRepository = getRepository(Verb);
-  private questionRepository = getRepository(Question);
-  private statisticsRepository = getRepository(TestStatistics);
+  private questionService = new QuestionService();
 
-  async findAllLessons(): Promise<ILesson[]> {
+  async findAllLessons(): Promise<Lesson[]> {
     return await this.lessonRepository.find();
   }
 
-  async findAllLessonsByOptions(level: string): Promise<ILesson[]> {
+  async findAllLessonsByOptions(level: string): Promise<Lesson[]> {
     return await this.lessonRepository.find({
       order: {
         order: "ASC",
@@ -41,11 +39,7 @@ export class LessonsService {
   async findByIdLesson(id: number): Promise<any> {
     const lesson = await this.lessonRepository.findOne(id);
     const verbs = await this.verbRepository.find();
-    const questions = await this.questionRepository.find({
-      where: {
-        lesson: id,
-      },
-    });
+    const questions = await this.questionService.findByOptions(id);
 
     if (!lesson) {
       throw new ApiError(httpStatus.NOT_FOUND, "Not found");
@@ -90,11 +84,9 @@ export class LessonsService {
   async getResultLesson(getResulLessonDto: IGetResulLesson): Promise<any> {
     const { action, lessonId, answers } = getResulLessonDto;
     const verbs: IVerb[] = await this.verbRepository.find();
-    const questions: IQuestion[] = await this.questionRepository.find({
-      where: {
-        lessonId: lessonId,
-      },
-    });
+    const questions: IQuestion[] = await await this.questionService.findByOptions(
+      lessonId
+    );
 
     const correct = questions.reduce((acc, curr) => {
       const foundVerb: IVerb | undefined = verbs.find(
@@ -125,37 +117,13 @@ export class LessonsService {
     };
   }
 
-  async findAllQuestions(): Promise<IQuestion[]> {
-    return await this.questionRepository.find();
-  }
-
-  async findByIdQuestion(id: number): Promise<IQuestion> {
-    const question = await this.questionRepository.findOne(id);
-
-    if (!question) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Not found");
-    }
-
-    return question;
-  }
-
-  async createQuestion(createQuestion: ICreateQuestion): Promise<IQuestion> {
-    const question = await this.questionRepository.save(createQuestion);
-
-    return question;
-  }
-
-  async removeQuestion(id: number): Promise<any> {
-    return await this.questionRepository.delete(id);
-  }
-
   async initialLessons(): Promise<any> {
     const lessons: ILesson[] = await this.findAllLessons();
     const data = generateLessons();
 
     const generateQuestion = async (verbs: any, param: any) => {
       for (const verb of verbs) {
-        await this.createQuestion({ ...param, verb });
+        await this.questionService.createQuestion({ ...param, verb });
       }
     };
 

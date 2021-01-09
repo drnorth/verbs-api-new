@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { LessonsService } from "./lessons.service";
+import { LessonsService } from "./lesson.service";
 import httpStatus from "http-status";
 import ApiError from "utils/ApiError";
 
@@ -15,6 +15,18 @@ export class LessonsController {
 
     return res.status(httpStatus.OK).json({
       message: "Post has been created successfully",
+      lesson,
+    });
+  }
+
+  static async updateLesson(req: Request, res: Response) {
+    const lesson = await new LessonsService().updateLesson(
+      Number(req.params.id),
+      req.body
+    );
+
+    return res.status(httpStatus.OK).json({
+      message: "Lesson has been updated successfully",
       lesson,
     });
   }
@@ -35,24 +47,6 @@ export class LessonsController {
     return res.status(httpStatus.OK).json({
       message: "Post has been created successfully",
       result,
-    });
-  }
-
-  static async getQuestions(req: Request, res: Response, next: NextFunction) {
-    const questions = await new LessonsService().findAllQuestions();
-
-    return res.status(httpStatus.OK).json(questions);
-  }
-
-  static async removeQuestion(req: Request, res: Response, next: NextFunction) {
-    const response = await new LessonsService().removeQuestion(
-      Number(req.params.id)
-    );
-
-    if (!response) throw new ApiError(httpStatus.NOT_FOUND, "Not found");
-
-    return res.status(httpStatus.OK).json({
-      message: "Question has been deleted",
     });
   }
 

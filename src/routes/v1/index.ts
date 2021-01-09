@@ -2,15 +2,22 @@ import { Router } from "express";
 import catchAsync from "utils/catchAsync";
 import userRouter from "user/user.route.v1";
 import verbRouter from "verbs/verb.route.v1";
-import lessonRouter from "lessons/lessons.route.v1";
+import lessonRouter from "lessons/lesson.route.v1";
 import authRouter from "auth/auth.route.v1";
+import questionRouter from "questions/question.route.v1";
 import validate from "middlewares/validate";
 
 const router = Router();
 
 const allRoutes = [];
 
-allRoutes.push(userRouter, verbRouter, lessonRouter, authRouter);
+allRoutes.push(
+  userRouter,
+  verbRouter,
+  lessonRouter,
+  authRouter,
+  questionRouter
+);
 
 allRoutes.forEach((route) => {
   router.use(

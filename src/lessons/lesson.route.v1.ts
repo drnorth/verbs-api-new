@@ -1,4 +1,4 @@
-import { LessonsController } from "./lessons.controller";
+import { LessonsController } from "./lesson.controller";
 import { LessonValidator } from "./lesson.validation";
 
 const Routes = {
@@ -25,28 +25,21 @@ const Routes = {
       validate: "emptyValidation",
     },
     {
-      method: "post",
-      route: "/:id/questions/result",
-      action: "removeLesson",
-      validate: "emptyValidation",
-    },
-    {
       method: "get",
-      route: "/questions",
-      action: "getQuestions",
+      route: "/:id/result",
+      action: "setResult",
       validate: "emptyValidation",
     },
-    {
-      method: "delete",
-      route: "/questions/:id",
-      action: "removeQuestion",
-      validate: "emptyValidation",
-    },
-
     {
       method: "get",
       route: "/:id",
       action: "getLesson",
+      validate: "emptyValidation",
+    },
+    {
+      method: "put",
+      route: "/:id",
+      action: "updateLesson",
       validate: "emptyValidation",
     },
     {
