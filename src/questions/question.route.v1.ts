@@ -16,6 +16,8 @@ const Routes: IRouteStructure<
       route: "/",
       action: "getQuestions",
       validate: "emptyValidation",
+      auth: true,
+      role: "getQuestions",
     },
     {
       method: "post",

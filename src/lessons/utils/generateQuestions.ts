@@ -3,7 +3,7 @@ import {
   ILesson,
   IQuestion,
   QuestionAction,
-} from "../interfaces/common.types";
+} from "types.common/lessons.types";
 import shuffle from "utils/shuffle";
 import { IVerb } from "types.common/verbs.types";
 

@@ -6,6 +6,7 @@ import lessonRouter from "lessons/lesson.route.v1";
 import authRouter from "auth/auth.route.v1";
 import questionRouter from "questions/question.route.v1";
 import validate from "middlewares/validate";
+import { auth } from "middlewares/auth";
 
 const router = Router();
 
@@ -22,14 +23,13 @@ allRoutes.push(
 allRoutes.forEach((route) => {
   router.use(
     route.mainRoute,
-    route.subRoutes.reduce((acc: any, subRoute) => {
-      acc
-        .route(subRoute.route)
-        [subRoute.method](
-          (new route.validator() as any)[subRoute.validate](),
-          validate,
-          catchAsync((route.controller as any)[subRoute.action])
-        );
+    (route.subRoutes as any).reduce((acc: Router, subRoute: any) => {
+      (acc.route(subRoute.route) as any)[subRoute.method](
+        (new route.validator() as any)[subRoute.validate](),
+        validate,
+        subRoute.auth ? auth(subRoute.role) : [],
+        catchAsync((route.controller as any)[subRoute.action])
+      );
       return acc;
     }, Router())
   );

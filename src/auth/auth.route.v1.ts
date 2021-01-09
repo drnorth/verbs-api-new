@@ -1,6 +1,7 @@
 import { AuthController } from "./auth.controller";
 import { AuthValidator } from "./auth.validation";
 import { IRouteStructure } from "types.common/route.types";
+
 const Routes: IRouteStructure<
   typeof AuthController,
   typeof AuthValidator,
