@@ -5,6 +5,7 @@ import verbRouter from "verbs/verb.route.v1";
 import lessonRouter from "lessons/lesson.route.v1";
 import authRouter from "auth/auth.route.v1";
 import questionRouter from "questions/question.route.v1";
+import statisticRouter from "statistic/statistic.route.v1";
 import validate from "middlewares/validate";
 import { auth } from "middlewares/auth";
 
@@ -17,7 +18,8 @@ allRoutes.push(
   verbRouter,
   lessonRouter,
   authRouter,
-  questionRouter
+  questionRouter,
+  statisticRouter
 );
 
 allRoutes.forEach((route) => {

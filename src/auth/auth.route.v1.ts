@@ -21,7 +21,7 @@ const Routes: IRouteStructure<
       method: "post",
       route: "/login",
       action: "login",
-      validate: "emptyValidation",
+      validate: "login",
     },
     {
       method: "post",
@@ -33,7 +33,7 @@ const Routes: IRouteStructure<
       method: "post",
       route: "/refresh-tokens",
       action: "refreshTokens",
-      validate: "emptyValidation",
+      validate: "refreshToken",
     },
   ],
 };

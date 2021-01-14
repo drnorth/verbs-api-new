@@ -29,6 +29,14 @@ const Routes: IRouteStructure<
     },
     {
       method: "get",
+      route: "/info",
+      action: "info",
+      validate: "emptyValidation",
+      auth: true,
+      role: "userInfo",
+    },
+    {
+      method: "get",
       route: "/:id",
       action: "one",
       validate: "emptyValidation",

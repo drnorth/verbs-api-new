@@ -18,6 +18,8 @@ import { QuestionService } from "questions/question.service";
 import { Verb } from "verbs/verb.entity";
 import { OpenedLesson } from "./entities/openedLesson.entity";
 import { User } from "user/user.entity";
+import { ILessonStatistic, IVerbStatistic } from "types.common/statistic.types";
+import { StatisticService } from "statistic/statistic.service";
 
 export class LessonsService {
   private lessonRepository = getRepository(Lesson);
@@ -143,15 +145,13 @@ export class LessonsService {
     user: User
   ): Promise<any> {
     const { action, lessonId, answers } = getResulLessonDto;
-    const verbs: IVerb[] = await this.verbRepository.find();
+    const verbs: Verb[] = await this.verbRepository.find();
     const questions: IQuestion[] = await await this.questionService.findByOptions(
       lessonId
     );
-
+    let verbStatistic: IVerbStatistic[] = [];
     const correct = questions.reduce((acc, curr) => {
-      const foundVerb: IVerb | undefined = verbs.find(
-        (e) => e.inf === curr.verb
-      );
+      const foundVerb = verbs.find((e) => e.inf === curr.verb) as Verb;
       const foundAnswer = answers.find((e) => e.questionId === curr.id);
       let shouldIncrement: boolean;
 
@@ -164,12 +164,20 @@ export class LessonsService {
         !!foundAnswer &&
         foundVerb[curr.answerType] === foundAnswer.value;
 
+      verbStatistic.push({
+        user,
+        verb: foundVerb,
+        correct: shouldIncrement,
+      });
+
       return acc + Number(shouldIncrement);
     }, 0 as number);
 
     const percentCorrect = Math.floor((correct / questions.length) * 100);
 
-    const lesson = await this.lessonRepository.findOne({ id: lessonId });
+    const lesson = (await this.lessonRepository.findOne({
+      id: lessonId,
+    })) as Lesson;
     if (lesson) {
       const openedLesson = await this.openedLessonRepository.findOne({
         user,
@@ -184,6 +192,14 @@ export class LessonsService {
         await this.openLessons(user, lesson.difficult);
       }
     }
+
+    const lessonStatistic: ILessonStatistic = {
+      lesson,
+      user,
+      result: percentCorrect,
+    };
+
+    await new StatisticService().save(lessonStatistic, verbStatistic);
 
     return {
       correct,
