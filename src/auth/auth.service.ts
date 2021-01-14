@@ -4,6 +4,8 @@ import { UserService } from "user/user.service";
 import { TokenService } from "token/token.service";
 import ApiError from "utils/ApiError";
 import { TypesToken } from "token/token.entity";
+import { LessonsService } from "lessons/lesson.service";
+import { Difficult } from "types.common/verbs.types";
 
 export class AuthService {
   async login(deviceId: string): Promise<any>;
@@ -32,8 +34,10 @@ export class AuthService {
       throw new ApiError(httpStatus.UNAUTHORIZED, "incorrect password");
     }
     const tokens = await new TokenService().generateAuthToken(user);
-
-    return { user, tokens };
+    await new LessonsService().openLessons(user, Difficult.EASY);
+    await new LessonsService().openLessons(user, Difficult.MIDDLE);
+    await new LessonsService().openLessons(user, Difficult.HARD);
+    return tokens;
   }
 
   async logout(refreshToken: string) {

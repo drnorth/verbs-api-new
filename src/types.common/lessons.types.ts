@@ -5,6 +5,12 @@ export enum QuestionAction {
   WRITE = "WRITE",
 }
 
+export enum StatusLesson {
+  LOCK = "LOCK",
+  PROGRESS = "PROGRESS",
+  COMPLETE = "COMPLETE",
+}
+
 export enum QuestionType {
   FORM = "FORM",
   THREE_FORM = "THREE_FORM",

@@ -31,4 +31,8 @@ export class UserController {
     const user = await new UserService().update(req.params.id, req.body);
     return res.send(user);
   }
+
+  static async info(req: Request, res: Response, next: NextFunction) {
+    return res.send(req.user);
+  }
 }

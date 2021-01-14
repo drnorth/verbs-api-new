@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Difficult } from "types.common/verbs.types";
 import { QuestionAction } from "types.common/lessons.types";
+import { Question } from "questions/question.entity";
 
 @Entity()
 export class Lesson {
@@ -23,4 +24,13 @@ export class Lesson {
 
   @Column()
   order: number;
+
+  @Column("int", { select: false, nullable: true })
+  status?: string;
+
+  @Column("int", { select: false, nullable: true })
+  bestAttempt?: number;
+
+  @OneToMany(() => Question, (question) => question.lesson)
+  questions: Question[];
 }
