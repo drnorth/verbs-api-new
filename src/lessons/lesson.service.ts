@@ -43,8 +43,6 @@ export class LessonsService {
         "lesson_bestAttempt"
       )
       .getMany();
-
-    //return await this.lessonRepository.find();
   }
 
   async findAllLessonsByOptions(level: string): Promise<Lesson[]> {
@@ -63,7 +61,6 @@ export class LessonsService {
       relations: ["questions"],
     });
     const verbs = await this.verbRepository.find();
-    //const questions = await this.questionService.findByOptions(id);
 
     if (!lesson) {
       throw new ApiError(httpStatus.NOT_FOUND, "Not found");
@@ -112,12 +109,11 @@ export class LessonsService {
       return;
     }
     const countQuestionForOpen = 5;
-    //const openedLessons = await this.openedLessonRepository.find({ user });
     const openedLessons = await this.openedLessonRepository
       .createQueryBuilder("openLessons")
       .leftJoin(Lesson, "lesson", "lesson.id = openLessons.lessonId")
       .where("lesson.difficult = :difficult AND openLessons.userId = :userId", {
-        difficult: difficult,
+        difficult,
         userId: user.id,
       })
       .getMany();
@@ -179,15 +175,13 @@ export class LessonsService {
         user,
         lesson,
       });
-      if (openedLesson) {
-        if (percentCorrect > openedLesson.bestAttempt) {
-          openedLesson.bestAttempt = percentCorrect;
-          if (percentCorrect >= 85) {
-            openedLesson.status = StatusLesson.COMPLETE;
-          }
-          await this.openedLessonRepository.save(openedLesson);
-          await this.openLessons(user, lesson.difficult);
-        }
+      if (openedLesson && percentCorrect > openedLesson.bestAttempt) {
+        openedLesson.bestAttempt = percentCorrect;
+        openedLesson.status =
+          percentCorrect >= 85 ? StatusLesson.COMPLETE : openedLesson.status;
+
+        await this.openedLessonRepository.save(openedLesson);
+        await this.openLessons(user, lesson.difficult);
       }
     }
 
