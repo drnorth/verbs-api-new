@@ -2,10 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { LessonsService } from "./lesson.service";
 import httpStatus from "http-status";
 import ApiError from "utils/ApiError";
+import { User } from "user/user.entity";
 
 export class LessonsController {
   static async getAllLessons(req: Request, res: Response, next: NextFunction) {
-    const lessons = await new LessonsService().findAllLessons();
+    if (!req.user) {
+      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    const lessons = await new LessonsService().findAllLessons(
+      (req.user as any).id
+    );
 
     return res.send(lessons);
   }
@@ -42,7 +48,10 @@ export class LessonsController {
   }
 
   static async setResult(req: Request, res: Response, next: NextFunction) {
-    const result = await new LessonsService().getResultLesson(req.body);
+    const result = await new LessonsService().getResultLesson(
+      req.body,
+      req.user as User
+    );
 
     return res.status(httpStatus.OK).json({
       message: "Post has been created successfully",

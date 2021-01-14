@@ -1,5 +1,5 @@
-import { getRepository } from "typeorm";
-import { Lesson } from "./lesson.entity";
+import { getRepository, Between } from "typeorm";
+import { Lesson } from "./entities/lesson.entity";
 import {
   ILesson,
   ICreateLesson,
@@ -8,6 +8,7 @@ import {
   QuestionAction,
   QuestionType,
   AnswerType,
+  StatusLesson,
 } from "types.common/lessons.types";
 import { Difficult, IVerb } from "types.common/verbs.types";
 import ApiError from "utils/ApiError";
@@ -15,14 +16,35 @@ import httpStatus from "http-status";
 import { generateLessons, generateQuestions } from "./utils";
 import { QuestionService } from "questions/question.service";
 import { Verb } from "verbs/verb.entity";
+import { OpenedLesson } from "./entities/openedLesson.entity";
+import { User } from "user/user.entity";
 
 export class LessonsService {
   private lessonRepository = getRepository(Lesson);
   private verbRepository = getRepository(Verb);
   private questionService = new QuestionService();
+  private openedLessonRepository = getRepository(OpenedLesson);
 
-  async findAllLessons(): Promise<Lesson[]> {
-    return await this.lessonRepository.find();
+  async findAllLessons(userId: string): Promise<Lesson[]> {
+    return await this.lessonRepository
+      .createQueryBuilder("lesson")
+      .leftJoin(
+        OpenedLesson,
+        "openLesson",
+        "lesson.id = openLesson.lessonId AND openLesson.userId = :user",
+        { user: Number(userId) }
+      )
+      .addSelect(
+        "CASE WHEN openLesson.id IS NULL THEN 'LOCK' ELSE openLesson.status END",
+        "lesson_status"
+      )
+      .addSelect(
+        "CASE WHEN openLesson.id IS NULL THEN 0 ELSE openLesson.bestAttempt END",
+        "lesson_bestAttempt"
+      )
+      .getMany();
+
+    //return await this.lessonRepository.find();
   }
 
   async findAllLessonsByOptions(level: string): Promise<Lesson[]> {
@@ -37,9 +59,11 @@ export class LessonsService {
   }
 
   async findByIdLesson(id: number): Promise<any> {
-    const lesson = await this.lessonRepository.findOne(id);
+    const lesson = await this.lessonRepository.findOne(id, {
+      relations: ["questions"],
+    });
     const verbs = await this.verbRepository.find();
-    const questions = await this.questionService.findByOptions(id);
+    //const questions = await this.questionService.findByOptions(id);
 
     if (!lesson) {
       throw new ApiError(httpStatus.NOT_FOUND, "Not found");
@@ -47,7 +71,7 @@ export class LessonsService {
 
     return {
       ...lesson,
-      questions: generateQuestions(lesson, verbs, questions),
+      questions: generateQuestions(lesson, verbs, lesson.questions),
     };
   }
 
@@ -80,8 +104,48 @@ export class LessonsService {
 
     return lesson;
   }
+  async openLessons(
+    user: User | undefined,
+    difficult: Difficult
+  ): Promise<any> {
+    if (!user) {
+      return;
+    }
+    const countQuestionForOpen = 5;
+    //const openedLessons = await this.openedLessonRepository.find({ user });
+    const openedLessons = await this.openedLessonRepository
+      .createQueryBuilder("openLessons")
+      .leftJoin(Lesson, "lesson", "lesson.id = openLessons.lessonId")
+      .where("lesson.difficult = :difficult AND openLessons.userId = :userId", {
+        difficult: difficult,
+        userId: user.id,
+      })
+      .getMany();
+    this.openedLessonRepository.find();
+    const countComplete = openedLessons.reduce((acc, curr) => {
+      return acc + (curr.status === StatusLesson.COMPLETE ? 1 : 0);
+    }, 0);
+    if (!openedLessons.length || countComplete / openedLessons.length > 0.6) {
+      const lessonsForOpen = await this.lessonRepository
+        .createQueryBuilder("lesson")
+        .where(
+          `(lesson.order BETWEEN ${openedLessons.length} AND ${
+            openedLessons.length + countQuestionForOpen - 1
+          }) AND lesson.difficult = :difficult`,
+          { difficult }
+        )
+        .getMany();
+      const openedLessonForSave = lessonsForOpen.map((value) => {
+        return { lesson: value, user: user };
+      });
+      return await this.openedLessonRepository.save(openedLessonForSave);
+    }
+  }
 
-  async getResultLesson(getResulLessonDto: IGetResulLesson): Promise<any> {
+  async getResultLesson(
+    getResulLessonDto: IGetResulLesson,
+    user: User
+  ): Promise<any> {
     const { action, lessonId, answers } = getResulLessonDto;
     const verbs: IVerb[] = await this.verbRepository.find();
     const questions: IQuestion[] = await await this.questionService.findByOptions(
@@ -109,6 +173,24 @@ export class LessonsService {
 
     const percentCorrect = Math.floor((correct / questions.length) * 100);
 
+    const lesson = await this.lessonRepository.findOne({ id: lessonId });
+    if (lesson) {
+      const openedLesson = await this.openedLessonRepository.findOne({
+        user,
+        lesson,
+      });
+      if (openedLesson) {
+        if (percentCorrect > openedLesson.bestAttempt) {
+          openedLesson.bestAttempt = percentCorrect;
+          if (percentCorrect >= 85) {
+            openedLesson.status = StatusLesson.COMPLETE;
+          }
+          await this.openedLessonRepository.save(openedLesson);
+          await this.openLessons(user, lesson.difficult);
+        }
+      }
+    }
+
     return {
       correct,
       total: questions.length,
@@ -118,7 +200,7 @@ export class LessonsService {
   }
 
   async initialLessons(): Promise<any> {
-    const lessons: ILesson[] = await this.findAllLessons();
+    const lessons: ILesson[] = await this.findAllLessons("0");
     const data = generateLessons();
 
     const generateQuestion = async (verbs: any, param: any) => {
@@ -149,7 +231,7 @@ export class LessonsService {
             answerType = AnswerType.INF;
           }
 
-          if (i > 6 && i < 12) {
+          if (i >= 6 && i <= 12) {
             answerType = AnswerType.SIMPLE;
           }
 

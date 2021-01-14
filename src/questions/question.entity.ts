@@ -7,14 +7,14 @@ import {
   RelationId,
 } from "typeorm";
 import { QuestionType, AnswerType } from "types.common/lessons.types";
-import { Lesson } from "../lessons/lesson.entity";
+import { Lesson } from "lessons/entities/lesson.entity";
 
 @Entity()
 export class Question {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Lesson, {
+  @ManyToOne((type) => Lesson, (lesson) => lesson.questions, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "lessonId" })
@@ -23,10 +23,16 @@ export class Question {
   @RelationId((question: Question) => question.lesson)
   lessonId: number;
 
-  @Column()
+  @Column({
+    type: "enum",
+    enum: QuestionType,
+  })
   type: QuestionType;
 
-  @Column()
+  @Column({
+    type: "enum",
+    enum: AnswerType,
+  })
   answerType: AnswerType;
 
   @Column()
