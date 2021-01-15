@@ -48,8 +48,12 @@ export class LessonsController {
   }
 
   static async setResult(req: Request, res: Response, next: NextFunction) {
+    const payload = {
+      lessonId: req.params.id,
+      ...req.body,
+    };
     const result = await new LessonsService().getResultLesson(
-      req.body,
+      payload,
       req.user as User
     );
 

@@ -36,7 +36,7 @@ const Routes: IRouteStructure<
       role: "data",
     },
     {
-      method: "get",
+      method: "post",
       route: "/:id/result",
       action: "setResult",
       validate: "emptyValidation",
