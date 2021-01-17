@@ -146,9 +146,10 @@ export class LessonsService {
   ): Promise<any> {
     const { action, lessonId, answers } = getResulLessonDto;
     const verbs: Verb[] = await this.verbRepository.find();
-    const questions: IQuestion[] = await await this.questionService.findByOptions(
+    const questions: IQuestion[] = await this.questionService.findByOptions(
       lessonId
     );
+
     let verbStatistic: IVerbStatistic[] = [];
     const correct = questions.reduce((acc, curr) => {
       const foundVerb = verbs.find((e) => e.inf === curr.verb) as Verb;
@@ -178,11 +179,13 @@ export class LessonsService {
     const lesson = (await this.lessonRepository.findOne({
       id: lessonId,
     })) as Lesson;
+
     if (lesson) {
       const openedLesson = await this.openedLessonRepository.findOne({
         user,
         lesson,
       });
+
       if (openedLesson && percentCorrect > openedLesson.bestAttempt) {
         openedLesson.bestAttempt = percentCorrect;
         openedLesson.status =
