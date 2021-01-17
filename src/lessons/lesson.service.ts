@@ -1,5 +1,5 @@
 import { getRepository, Between } from "typeorm";
-import { Lesson } from "./entities/lesson.entity";
+import { Lesson } from "lessons/entities/lesson.entity";
 import {
   ILesson,
   ICreateLesson,

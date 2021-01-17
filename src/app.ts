@@ -8,6 +8,9 @@ import cors from "cors";
 import { jwtStrategy } from "config/passport";
 import { errorConverter, errorHandler } from "middlewares/error";
 import ApiError from "utils/ApiError";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import config from "config/config";
 
 import router from "routes/v1";
 
@@ -28,6 +31,16 @@ app.use(cors(corsOptions));
 
 app.use(passport.initialize());
 passport.use("jwt", jwtStrategy);
+
+app.get("/", (req, res, next) => {
+  return res.redirect("/docs");
+});
+
+app.use("/docs", swaggerUi.serve);
+app.get(
+  "/docs",
+  swaggerUi.setup(swaggerJSDoc(config.swaggerConfig), { explorer: true })
+);
 
 app.use("/api/v1", router);
 
