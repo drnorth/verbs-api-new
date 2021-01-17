@@ -26,16 +26,16 @@ services:
       - db
     healthcheck:
       disable: true
-  # web:
-  #   build: .
-  #   restart: always
-  #   command: npm run start:dev
-  #   ports:
-  #     - "${APP_PORT}:${APP_PORT}"
-  #   depends_on:
-  #     - db
-  #   volumes:
-  #     - .:/usr/src/app
-  #     # - /usr/src/app/node_modules
-  #   # environment:
-  #   #  - NODE_ENV=production
+  web:
+    build: .
+    restart: always
+    command: npm run start:dev
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+      # - /usr/src/app/node_modules
+    # environment:
+    #  - NODE_ENV=production
