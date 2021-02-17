@@ -9,7 +9,17 @@ import { IVerb } from "types.common/verbs.types";
 
 const COUNT = 3;
 const vowelsLetter = ["a", "e", "i", "o", "u", "y"];
-const variatTrick = ["ing", "ed", "en", "own", "n", "et", "old", "ought"];
+const variatTrick = [
+  "ing",
+  "ed",
+  "en",
+  "own",
+  "on",
+  "ept",
+  "et",
+  "old",
+  "ought",
+];
 
 export const generateQuestions = (
   lesson: ILesson,
@@ -21,16 +31,22 @@ export const generateQuestions = (
   const filterVerbs = (curr: IQuestion) => {
     const { answerType } = curr;
     const findedVerb = verbs.find((verb) => verb.inf === curr.verb) as IVerb;
-    const lastElement = curr.verb[curr.verb.length];
+    const variatTickCurr = variatTrick.filter(
+      (curr) => !findedVerb[answerType].endsWith(curr)
+    );
+    const checkingArray = vowelsLetter.concat(variatTrick);
+    const changedAnswer = findedVerb[answerType]
+      .replace(/[(][A-Z]+[)]/gi, "")
+      .trim();
+    const variatString = checkingArray.reduce(
+      (acc, curr) => acc.replace(new RegExp(curr + "$"), ""),
+      changedAnswer
+    );
     const getValue = () => {
-      if (vowelsLetter.includes(lastElement)) {
-        return (
-          findedVerb[answerType].slice(0, -1) +
-          variatTrick[getRandomInt(0, variatTrick.length)]
-        );
-      }
-
-      return findedVerb[answerType] + variatTrick[getRandomInt(0, variatTrick.length)];
+      const randomIndex = getRandomInt(0, variatTickCurr.length - 1);
+      const unswerString = variatString + variatTickCurr[randomIndex];
+      variatTickCurr.splice(randomIndex, 1);
+      return unswerString;
     };
 
     const list = Array.from({ length: COUNT });
@@ -58,7 +74,9 @@ export const generateQuestions = (
         answers: shuffle([
           {
             id: foundVerb.id,
-            value: foundVerb[question.answerType],
+            value: foundVerb[question.answerType]
+              .replace(/[(][A-Z]+[)]/gi, "")
+              .trim(),
             questionId: question.id,
           },
           ...variantVerbs,
