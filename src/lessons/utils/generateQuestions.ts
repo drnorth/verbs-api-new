@@ -26,11 +26,11 @@ export const generateQuestions = (
       if (vowelsLetter.includes(lastElement)) {
         return (
           findedVerb[answerType].slice(0, -1) +
-          getRandomInt(0, variatTrick.length)
+          variatTrick[getRandomInt(0, variatTrick.length)]
         );
       }
 
-      return findedVerb[answerType] + getRandomInt(0, variatTrick.length);
+      return findedVerb[answerType] + variatTrick[getRandomInt(0, variatTrick.length)];
     };
 
     const list = Array.from({ length: COUNT });
