@@ -36,6 +36,6 @@ services:
       - db
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      # - /usr/src/app/node_modules
     # environment:
     #  - NODE_ENV=production

@@ -42,20 +42,24 @@ export class TokenService {
   }
 
   async verifyToken(token: string, type: TypesToken) {
-    const payload: any = jwt.verify(token, config.jwtConfig.secret);
-    const tokenDoc = await this.tokenRepository.findOne(
-      {
-        token,
-        type,
-        user: payload.sub,
-        blacklisted: false,
-      },
-      { relations: ["user"] }
-    );
-    if (!tokenDoc) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Token not found");
+    try {
+      const payload: any = jwt.verify(token, config.jwtConfig.secret);
+      const tokenDoc = await this.tokenRepository.findOne(
+        {
+          token,
+          type,
+          user: payload.sub,
+          blacklisted: false,
+        },
+        { relations: ["user"] }
+      );
+      if (!tokenDoc) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Token not found");
+      }
+      return tokenDoc;
+    } catch (e) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, "Undefined error");
     }
-    return tokenDoc;
   }
 
   async generateAuthToken(user: User) {
