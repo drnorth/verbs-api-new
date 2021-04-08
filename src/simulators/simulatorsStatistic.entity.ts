@@ -26,8 +26,8 @@ export class SimulatorsStatistic {
   user: User;
 
   @Column({ default: 0 })
-  correct?: number;
+  correct: number;
 
   @Column({ default: 0 })
-  count?: number;
+  count: number;
 }
