@@ -8,14 +8,14 @@ export class SimulatorsStatisticService {
   private verbRepository = getRepository(Verb);
   private SimulatorsStatisticRepo = getRepository(SimulatorsStatistic);
 
-  async findAllVerbs(userId: User) {
+  async findAllVerbs(user: User) {
     return await this.verbRepository
       .createQueryBuilder("verb")
       .leftJoin(
         SimulatorsStatistic,
         "simulatorsStatistic",
         "simulatorsStatistic.verbId = verb.id AND simulatorsStatistic.userId = :user",
-        { user: userId }
+        { user: user.id }
       )
       .addSelect(
         "CASE WHEN simulatorsStatistic.id IS NULL THEN 0 ELSE simulatorsStatistic.correct END",
@@ -40,6 +40,7 @@ export class SimulatorsStatisticService {
     if (simStat) {
       simStat.count += 1;
       simStat.correct += data.correct ? 1 : 0;
+      await this.SimulatorsStatisticRepo.save(simStat);
       return;
     }
     await this.SimulatorsStatisticRepo.save({
