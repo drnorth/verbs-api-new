@@ -24,4 +24,7 @@ export class Verb {
     default: Difficult.EASY,
   })
   difficult: Difficult;
+
+  @Column({ select: false, nullable: true })
+  coeff: number;
 }

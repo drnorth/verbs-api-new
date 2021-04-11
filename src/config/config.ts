@@ -3,6 +3,9 @@ import { ConnectionOptions } from "typeorm";
 
 config();
 
+const pathForTypeORM = process.env.NODE_ENV === "dev" ? "src/" : "build/";
+const typeForTypeORM = process.env.NODE_ENV === "dev" ? "ts" : "js";
+
 const baseConfig: ConnectionOptions = {
   type: "postgres",
   host: process.env.DB_HOST || "db",
@@ -12,13 +15,13 @@ const baseConfig: ConnectionOptions = {
   database: process.env.DB_BASE,
   synchronize: true,
   logging: false,
-  entities: ["src/**/*.entity.ts"],
-  migrations: ["src/migration/**/*.ts"],
-  subscribers: ["src/subscriber/**/*.ts"],
+  entities: [pathForTypeORM + "**/*.entity." + typeForTypeORM],
+  migrations: [pathForTypeORM + "migration/**/*." + typeForTypeORM],
+  subscribers: [pathForTypeORM + "subscriber/**/*." + typeForTypeORM],
   cli: {
-    entitiesDir: "src/**/",
-    migrationsDir: "src/migration",
-    subscribersDir: "src/subscriber",
+    entitiesDir: pathForTypeORM + "**/",
+    migrationsDir: pathForTypeORM + "migration",
+    subscribersDir: pathForTypeORM + "subscriber",
   },
 };
 
@@ -35,4 +38,29 @@ export default {
     resetPasswordExpirationMinutes: 10,
   },
   baseConfig,
+  swaggerConfig: {
+    swaggerDefinition: {
+      openapi: "3.0.0",
+      info: {
+        title: "Eazy verbs API",
+        version: "1.0.0",
+        description: "Learning 3 forms of irregular verbs",
+        license: {
+          name: "MIT",
+          url: "https://choosealicense.com/licenses/mit/",
+        },
+        contact: {
+          name: "RuBag",
+          url: "https://swagger.io",
+          email: "drnorth.rus@gmail.com",
+        },
+      },
+      servers: [
+        {
+          url: `http://localhost:${process.env.APP_PORT || 8000}/api/v1`,
+        },
+      ],
+    },
+    apis: [pathForTypeORM + "**/*.route*." + typeForTypeORM],
+  },
 };

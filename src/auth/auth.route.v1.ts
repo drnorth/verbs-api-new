@@ -39,3 +39,16 @@ const Routes: IRouteStructure<
 };
 
 export default Routes;
+
+/**
+ * @swagger
+ *
+ * /login
+ *  post:
+ *    produces:
+ *      -application/json
+ *    parameters:
+ *      - name: fastLogin
+ *        in:
+ *
+ */

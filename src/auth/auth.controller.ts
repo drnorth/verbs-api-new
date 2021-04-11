@@ -23,12 +23,12 @@ export class AuthController {
         req.body.deviceId
       }`;
 
-      if (
-        req.body.hashKey !==
-        generateSecureData(hashString, config.appConfig.loginSalt)
-      ) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect hash key");
-      }
+      // if (
+      //   req.body.hashKey !==
+      //   generateSecureData(hashString, config.appConfig.loginSalt)
+      // ) {
+      //   throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect hash key");
+      // }
       return res.send(await new AuthService().login(req.body.deviceId));
     }
     return res.send(
