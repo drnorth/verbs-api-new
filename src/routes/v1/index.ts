@@ -6,6 +6,7 @@ import lessonRouter from "lessons/lesson.route.v1";
 import authRouter from "auth/auth.route.v1";
 import questionRouter from "questions/question.route.v1";
 import statisticRouter from "statistic/statistic.route.v1";
+import fondWordRouter from "simulators/findWord/findWord.route.v1";
 import validate from "middlewares/validate";
 import { auth } from "middlewares/auth";
 
@@ -19,7 +20,8 @@ allRoutes.push(
   lessonRouter,
   authRouter,
   questionRouter,
-  statisticRouter
+  statisticRouter,
+  fondWordRouter
 );
 
 allRoutes.forEach((route) => {
