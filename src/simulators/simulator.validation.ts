@@ -1,12 +1,12 @@
 import BaseValidator from "utils/baseValidator";
-import { param } from "express-validator";
+import { query } from "express-validator";
 import { SimulatorType } from "types.common/simulators.types";
 import ApiError from "utils/ApiError";
 
 export class SimulatorValidator extends BaseValidator {
   get() {
     return [
-      param("type")
+      query("type")
         .optional()
         .custom((value, { req }) => {
           if (!Object.values(SimulatorType).includes(value)) {

@@ -4,10 +4,9 @@ import { SimulatorService } from "./simulator.service";
 
 export class SimulatorController {
   static async getTest(req: Request, res: Response, next: NextFunction) {
-    const test = await new SimulatorService().getTest(
-      req.user as User,
-      req.params.type || "WORD"
-    );
+    const test = await new SimulatorService().getTest(req.user as User, {
+      ...req.query,
+    });
     return res.send(test);
   }
 
