@@ -61,7 +61,7 @@ export default {
       },
       servers: [
         {
-          url: `http://localhost:${process.env.APP_PORT || 8000}/api/v1`,
+          url: urlSwagger,
         },
       ],
     },
