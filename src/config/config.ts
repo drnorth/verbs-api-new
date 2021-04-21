@@ -5,6 +5,10 @@ config();
 
 const pathForTypeORM = process.env.NODE_ENV === "dev" ? "src/" : "build/";
 const typeForTypeORM = process.env.NODE_ENV === "dev" ? "ts" : "js";
+const urlSwagger =
+  process.env.NODE_ENV === "dev"
+    ? `http://localhost:${process.env.APP_PORT || 8000}/api/v1`
+    : "https://api.easyverbs.xyz/v1";
 
 const baseConfig: ConnectionOptions = {
   type: "postgres",
