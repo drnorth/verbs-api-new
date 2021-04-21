@@ -1,12 +1,16 @@
 import { SimulatorsStatisticService } from "simulators/simulatorsStatistic.service";
 import { AnswerType, QuestionType } from "types.common/lessons.types";
+import { IQuery } from "types.common/main.types";
 import { IResult, SimulatorType } from "types.common/simulators.types";
 import { User } from "user/user.entity";
 import shuffle from "utils/shuffle";
 import { Verb } from "verbs/verb.entity";
 
 export class SimulatorService {
-  async getTest(user: User, type: string) {
+  async getTest(user: User, query: IQuery) {
+    const type: string = query.type || "WORD";
+    const countAnswers: number = query.countAnswers || 6;
+    const countVerbs: number = query.countVerbs || 10;
     const verbs = await new SimulatorsStatisticService().findAllVerbs(user);
     const accumCoeff = verbs.reduce((acc, cur) => {
       return acc + cur.coeff;
@@ -19,7 +23,7 @@ export class SimulatorService {
         coeff: iteration,
       };
     });
-    const tenRandoms = Array.from({ length: 10 }, () => Math.random());
+    const tenRandoms = Array.from({ length: countVerbs }, () => Math.random());
 
     const RandomVerbs = tenRandoms.map((el) => {
       for (let i = 0; completedVerbs.length - 1; i++) {
@@ -33,11 +37,12 @@ export class SimulatorService {
         ...completedVerbs[completedVerbs.length - 1],
       };
     });
-    if (type === SimulatorType.WORD || type === SimulatorType.TEST) {
-      return this.generateAnswersTest(RandomVerbs);
+    if (query.type === SimulatorType.WORD || type === SimulatorType.TEST) {
+      return this.generateAnswersTest(RandomVerbs, type, countAnswers);
     } else if (type === SimulatorType.WRITE || type === SimulatorType.LETTER) {
       return this.generateAnswersLatter(
         RandomVerbs,
+        type,
         type === SimulatorType.LETTER
       );
     }
@@ -52,8 +57,12 @@ export class SimulatorService {
     return "DONE";
   }
 
-  async generateAnswersTest(pickedVerbs: Verb[]) {
-    const COUNT = 3;
+  async generateAnswersTest(
+    pickedVerbs: Verb[],
+    type: string,
+    countAnswers: number
+  ) {
+    const COUNT = countAnswers - 1;
     const vowelsLetter = ["a", "e", "i", "o", "u", "y"];
     const variatTrick = [
       "ing",
@@ -101,6 +110,7 @@ export class SimulatorService {
           id: curr.id,
           verb: curr.inf,
           answerType: currentAnswerType,
+          type,
           answers: shuffle([
             {
               id: curr.id,
@@ -116,7 +126,11 @@ export class SimulatorService {
     }, [] as any);
   }
 
-  async generateAnswersLatter(pickedVerbs: Verb[], shuffledLetters: boolean) {
+  async generateAnswersLatter(
+    pickedVerbs: Verb[],
+    type: string,
+    shuffledLetters: boolean
+  ) {
     const answerValues = Object.values(AnswerType);
     return pickedVerbs.reduce((acc, curr) => {
       const currentAnswerType =
@@ -130,6 +144,7 @@ export class SimulatorService {
           id: curr.id,
           verb: curr.inf,
           answerType: currentAnswerType,
+          type,
           answer: correctAnswer,
           ...(shuffledLetters && {
             shuffledLetters: shuffle(correctAnswer.split("")),

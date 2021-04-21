@@ -63,6 +63,9 @@ export default Routes;
  *            type: string
  *            enum: [inf,simple,part]
  *            description: Verb form in answers
+ *          type:
+ *            type: string
+ *            enum: [WORD,TEST,WRITE,LETTER]
  *          answers:
  *            type: array
  *            description: Answers for test
@@ -77,11 +80,15 @@ export default Routes;
  *                  type: string
  *                  description: Answer variant
  *              required: [id,value]
- *        required: [id,verb,answerType,answers]
+ *              example:
+ *                id: 12d3f7bd-c727-47e0-a17d-4e3788d68dfb
+ *                value: arose
+ *        required: [id,verb,answerType,answers,type]
  *        example:
  *          id: 12d3f7bd-c727-47e0-a17d-4e3788d68dfb
  *          verb: arise
  *          answerType: simple
+ *          type: WORD
  *
  *      SimulatorWrite:
  *        description: Response then type WRITE or LETTER
@@ -98,6 +105,9 @@ export default Routes;
  *            type: string
  *            enum: [inf,simple,part]
  *            description: Verb form in answers
+ *          type:
+ *            type: string
+ *            enum: [WORD,TEST,WRITE,LETTER]
  *          answer:
  *            type: string
  *            description: Correct answer
@@ -106,10 +116,11 @@ export default Routes;
  *            description: Shuffled letters array of correct answer for type LETTER
  *            items:
  *              type: string
- *          required: [id,verb,answerType,answer]
+ *        required: [id,verb,answerType,answer,type]
  *        example:
  *          id: 12d3f7bd-c727-47e0-a17d-4e3788d68dfb
  *          verb: arise
+ *          type: WRITE
  *          answerType: simple
  *          answer: arose
  *
@@ -145,11 +156,23 @@ export default Routes;
  *        parameters:
  *          - in: query
  *            name: type
- *            required: true
+ *            default: WORD
  *            description: Simulator type
  *            schema:
  *              type: string
  *              enum: [WORD,TEST,WRITE,LETTER]
+ *          - in: query
+ *            name: countAnswers
+ *            default: 6
+ *            description: Count answers in simulator types WORD and TEST
+ *            schema:
+ *              type: number
+ *          - in: query
+ *            name: countVerbs
+ *            default: 10
+ *            description: Count verbs in simulator
+ *            schema:
+ *              type: number
  *        responses:
  *          200:
  *            description: Get random 10 verbs
