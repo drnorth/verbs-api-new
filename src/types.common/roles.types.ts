@@ -10,7 +10,7 @@ export enum userRights {
   getTest = "getTest",
   statistic = "statistic",
   userInfo = "userInfo",
-  simulators = "simulators",
+  findWord = "findWord",
 }
 
 export enum adminRights {
