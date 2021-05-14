@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import bodyParser from "body-parser";
 import httpStatus from "http-status";
 import compression from "compression";
@@ -41,6 +42,14 @@ app.get(
   "/docs",
   swaggerUi.setup(swaggerJSDoc(config.swaggerConfig), { explorer: true })
 );
+
+app.get("/terms", (req, res, next) => {
+  return res.sendFile(path.join(__dirname, "/HTML/terms.html"));
+});
+
+app.get("/privacy", (req, res, next) => {
+  return res.sendFile(path.join(__dirname, "/HTML/privacy.html"));
+});
 
 app.use("/api/v1", router);
 
