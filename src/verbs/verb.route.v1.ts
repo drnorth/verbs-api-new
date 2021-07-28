@@ -29,14 +29,6 @@ const Routes: IRouteStructure<
     },
     {
       method: "get",
-      route: "/init",
-      action: "initial",
-      validate: "emptyValidation",
-      auth: true,
-      role: "data",
-    },
-    {
-      method: "get",
       route: "/:id",
       action: "findVerb",
       validate: "emptyValidation",

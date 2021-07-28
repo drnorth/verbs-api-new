@@ -38,18 +38,4 @@ export class VerbsService {
   async delete(id: string | string[]): Promise<any> {
     return await this.verbRepository.delete(id);
   }
-
-  async initial(): Promise<any> {
-    const verbs = await this.findAll();
-
-    if (verbs.length) {
-      await this.delete(verbs.map((e) => e.id));
-    }
-
-    mockVerbs.forEach(async (verb) => {
-      const response = await this.create(verb);
-    });
-
-    return true;
-  }
 }

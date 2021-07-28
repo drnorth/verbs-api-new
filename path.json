@@ -1,8 +1,0 @@
-{
-  "compilterOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "*": ["./src/*"]
-    }
-  }
-}

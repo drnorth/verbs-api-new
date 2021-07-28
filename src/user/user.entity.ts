@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Roles } from "types.common/roles.types";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 @Entity()
 export class User extends BaseEntity {
