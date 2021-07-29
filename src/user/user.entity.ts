@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Roles } from "types.common/roles.types";
-import bcrypt from "bcrypt";
 import { Language } from "languages/entities/language.entity";
+import * as bcrypt from "bcryptjs";
 
 @Entity()
 export class User extends BaseEntity {

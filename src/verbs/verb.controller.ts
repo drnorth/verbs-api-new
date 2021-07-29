@@ -17,12 +17,6 @@ export class VerbController {
     return res.send(verb);
   }
 
-  static async initial(req: Request, res: Response, next: NextFunction) {
-    const response = await new VerbsService().initial();
-
-    return res.send(response);
-  }
-
   static async findVerb(req: Request, res: Response, next: NextFunction) {
     const user = req.user as User;
     const verb = await new VerbsService().findById(req.params.id, user.languageCode);
