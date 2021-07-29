@@ -1,6 +1,6 @@
 import { Lesson } from "lessons/entities/lesson.entity";
 import { User } from "user/user.entity";
-import { Verb } from "verbs/verb.entity";
+import { Verb } from "verbs/entities/verb.entity";
 
 export interface ILessonStatistic {
   lesson: Lesson;

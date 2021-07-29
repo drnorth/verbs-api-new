@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
 } from "typeorm";
-import { Verb } from "verbs/verb.entity";
+import { Verb } from "verbs/entities/verb.entity";
 import { User } from "user/user.entity";
 
 @Entity()

@@ -64,8 +64,9 @@ export class LessonsController {
   }
 
   static async getLesson(req: Request, res: Response, next: NextFunction) {
+    const user = req.user as User;
     const lesson = await new LessonsService().findByIdLesson(
-      Number(req.params.id)
+      Number(req.params.id), user.languageCode
     );
 
     if (!lesson) throw new ApiError(httpStatus.NOT_FOUND, "Not found");

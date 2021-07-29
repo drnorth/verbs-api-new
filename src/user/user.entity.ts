@@ -1,6 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Roles } from "types.common/roles.types";
 import bcrypt from "bcrypt";
+import { Language } from "languages/entities/language.entity";
 
 @Entity()
 export class User extends BaseEntity {
@@ -37,6 +45,15 @@ export class User extends BaseEntity {
     default: Roles.USER,
   })
   role: Roles;
+
+  @Column()
+  languageCode: string;
+
+  @ManyToOne((type) => Language, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "languageCode" })
+  language: Language;
 
   isPasswordMatch(password: string) {
     return bcrypt.compare(password, this.password as string);

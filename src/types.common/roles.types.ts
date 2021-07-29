@@ -11,6 +11,7 @@ export enum userRights {
   statistic = "statistic",
   userInfo = "userInfo",
   simulators = "simulators",
+  getLanguages = "getLanguages",
 }
 
 export enum adminRights {

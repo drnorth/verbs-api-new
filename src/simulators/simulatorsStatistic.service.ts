@@ -1,6 +1,6 @@
 import { getRepository } from "typeorm";
 import { SimulatorsStatistic } from "./simulatorsStatistic.entity";
-import { Verb } from "verbs/verb.entity";
+import { Verb } from "verbs/entities/verb.entity";
 import { User } from "user/user.entity";
 import { IResult } from "types.common/simulators.types";
 

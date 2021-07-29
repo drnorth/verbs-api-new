@@ -13,19 +13,22 @@ import {
 import { Difficult, IVerb } from "types.common/verbs.types";
 import ApiError from "utils/ApiError";
 import httpStatus from "http-status";
-import { generateLessons, generateQuestions } from "./utils";
+import { generateLessons } from "./utils";
 import { QuestionService } from "questions/question.service";
-import { Verb } from "verbs/verb.entity";
+import { Verb } from "verbs/entities/verb.entity";
 import { OpenedLesson } from "./entities/openedLesson.entity";
 import { User } from "user/user.entity";
 import { ILessonStatistic, IVerbStatistic } from "types.common/statistic.types";
 import { StatisticService } from "statistic/statistic.service";
+import { generateQuestions } from "utils/testGeneration";
+import { Language } from "languages/entities/language.entity";
 
 export class LessonsService {
   private lessonRepository = getRepository(Lesson);
   private verbRepository = getRepository(Verb);
   private questionService = new QuestionService();
   private openedLessonRepository = getRepository(OpenedLesson);
+  private languageRepository = getRepository(Language);
 
   async findAllLessons(userId: string): Promise<Lesson[]> {
     return await this.lessonRepository
@@ -58,19 +61,26 @@ export class LessonsService {
     });
   }
 
-  async findByIdLesson(id: number): Promise<any> {
+  async findByIdLesson(id: number, lang: string): Promise<any> {
     const lesson = await this.lessonRepository.findOne(id, {
       relations: ["questions"],
     });
-    const verbs = await this.verbRepository.find();
-
+    //const verbs = await this.verbRepository.find();
+    
     if (!lesson) {
       throw new ApiError(httpStatus.NOT_FOUND, "Not found");
     }
 
+    const language = await this.languageRepository.findOne({code: lang});
+    if (!language) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Language not found");
+    }
+
+    const questions = lesson.questions.map((question) => ({...question, action: lesson.action}));
+
     return {
       ...lesson,
-      questions: generateQuestions(lesson, verbs, lesson.questions),
+      questions: generateQuestions(questions, language, lesson.questions.length),
     };
   }
 
@@ -152,7 +162,7 @@ export class LessonsService {
 
     let verbStatistic: IVerbStatistic[] = [];
     const correct = questions.reduce((acc, curr) => {
-      const foundVerb = verbs.find((e) => e.inf === curr.verb) as Verb;
+      const foundVerb = verbs.find((e) => e.inf === curr.verb.inf) as Verb;
       const foundAnswer = answers.find((e) => e.questionId === curr.id);
       let shouldIncrement: boolean;
 

@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { QuestionType, AnswerType } from "types.common/lessons.types";
 import { Lesson } from "lessons/entities/lesson.entity";
+import { Verb } from "verbs/entities/verb.entity";
 
 @Entity()
 export class Question {
@@ -35,6 +36,12 @@ export class Question {
   })
   answerType: AnswerType;
 
-  @Column()
-  verb: string;
+  @ManyToOne((type) => Verb, (verb) => verb.questions, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "verbId" })
+  verb: Verb;
+
+  @RelationId((question: Question) => question.verb)
+  verbId: string;
 }

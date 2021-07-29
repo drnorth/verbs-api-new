@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import bodyParser from "body-parser";
+import {urlencoded, json} from "body-parser";
 import httpStatus from "http-status";
 import compression from "compression";
 import passport from "passport";
@@ -19,8 +19,8 @@ const app = express();
 
 app.use(helmet());
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(urlencoded({ extended: true }));
+app.use(json());
 
 app.use(compression());
 

@@ -4,7 +4,7 @@ import { IQuery } from "types.common/main.types";
 import { IResult, SimulatorType } from "types.common/simulators.types";
 import { User } from "user/user.entity";
 import shuffle from "utils/shuffle";
-import { Verb } from "verbs/verb.entity";
+import { Verb } from "verbs/entities/verb.entity";
 
 export class SimulatorService {
   async getTest(user: User, query: IQuery) {
@@ -37,7 +37,7 @@ export class SimulatorService {
         ...completedVerbs[completedVerbs.length - 1],
       };
     });
-    if (query.type === SimulatorType.WORD || type === SimulatorType.TEST) {
+    if (query.type === SimulatorType.WORD || type === SimulatorType.CHOOSE) {
       return this.generateAnswersTest(RandomVerbs, type, countAnswers);
     } else if (type === SimulatorType.WRITE || type === SimulatorType.LETTER) {
       return this.generateAnswersLatter(

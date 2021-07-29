@@ -1,8 +1,16 @@
 import { Difficult, IVerb } from "types.common/verbs.types";
+import { Verb } from "verbs/entities/verb.entity";
 
 export enum QuestionAction {
   CHOOSE = "CHOOSE",
   WRITE = "WRITE",
+}
+
+export enum ActionsTitle {
+  CHOOSE = "CHOOSE",
+  WRITE = "WRITE",
+  WORD = "WORD",
+  LETTER = "LETTER",
 }
 
 export enum StatusLesson {
@@ -35,7 +43,7 @@ export interface IQuestion {
   lessonId?: number;
   type: QuestionType;
   answerType: AnswerType;
-  verb: string;
+  verb: Verb;
 }
 
 export interface IAnswerResult {
@@ -61,12 +69,12 @@ export interface ICreateQuestion {
   title: string;
   type: QuestionType;
   answerType: AnswerType;
-  verb: string;
+  verb: Verb;
 }
 
 export interface IUpdateQuestion {
   title?: string;
   type?: QuestionType;
   answerType?: AnswerType;
-  verb?: string;
+  verb?: Verb;
 }

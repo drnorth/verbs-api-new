@@ -1,9 +1,11 @@
+import { VerbTranslation } from "verbs/entities/translations.entity";
+
 export interface IVerb {
   id: string;
   inf: string;
   simple: string;
   part: string;
-  translations: string;
+  translations: VerbTranslation[];
   difficult: Difficult;
 }
 

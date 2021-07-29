@@ -10,15 +10,19 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async createFastUser(deviceId: string) {
+  async createFastUser(deviceId: string, language: string) {
     const countFastUsers = await this.userRepository.count({
       isAutoCreated: true,
     });
     const userObj: any = {
       name: "user_" + (countFastUsers ? countFastUsers + 1 : 1),
       deviceId,
+      language: {
+        code: language
+      },
       isAutoCreated: true,
     };
+
     return this.userRepository.save(userObj);
   }
 

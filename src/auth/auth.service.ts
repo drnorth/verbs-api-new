@@ -8,9 +8,17 @@ import { LessonsService } from "lessons/lesson.service";
 import { Difficult } from "types.common/verbs.types";
 
 export class AuthService {
-  async login(deviceId: string): Promise<any>;
-  async login(name: string, password: string): Promise<any>;
-  async login(nameOrDeviceId: string, password?: string): Promise<any> {
+  async login(languageCode: string, deviceId: string): Promise<any>;
+  async login(
+    languageCode: string,
+    name: string,
+    password: string
+  ): Promise<any>;
+  async login(
+    languageCode: string,
+    nameOrDeviceId: string,
+    password?: string
+  ): Promise<any> {
     let findOptionUser: { name?: string; deviceId?: string } = {
       deviceId: nameOrDeviceId,
     };
@@ -27,7 +35,10 @@ export class AuthService {
         throw new ApiError(httpStatus.UNAUTHORIZED, "user not found");
       }
 
-      user = (await userService.createFastUser(nameOrDeviceId)) as User;
+      user = (await userService.createFastUser(
+        nameOrDeviceId,
+        languageCode
+      )) as User;
     }
 
     if (findOptionUser.name && !user.isPasswordMatch(password as string)) {

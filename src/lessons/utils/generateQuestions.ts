@@ -30,7 +30,7 @@ export const generateQuestions = (
 
   const filterVerbs = (curr: IQuestion) => {
     const { answerType } = curr;
-    const findedVerb = verbs.find((verb) => verb.inf === curr.verb) as IVerb;
+    const findedVerb = verbs.find((verb) => verb.inf === curr.verb.inf) as IVerb;
     const variatTickCurr = variatTrick.filter(
       (curr) => !findedVerb[answerType].endsWith(curr)
     );
@@ -63,7 +63,7 @@ export const generateQuestions = (
 
   return questions.map((question: IQuestion) => {
     const foundVerb: IVerb | undefined = verbs.find(
-      (verb) => verb.inf === question.verb
+      (verb) => verb.inf === question.verb.inf
     );
 
     if (action === QuestionAction.CHOOSE && foundVerb) {

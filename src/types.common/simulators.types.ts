@@ -5,7 +5,7 @@ export interface IResult {
 
 export enum SimulatorType {
   WORD = "WORD",
-  TEST = "TEST",
+  CHOOSE = "CHOOSE",
   WRITE = "WRITE",
   LETTER = "LETTER",
 }

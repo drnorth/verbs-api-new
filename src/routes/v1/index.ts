@@ -1,5 +1,6 @@
 import { Router } from "express";
 import catchAsync from "utils/catchAsync";
+import languageRouter from "languages/language.route.v1";
 import userRouter from "user/user.route.v1";
 import verbRouter from "verbs/verb.route.v1";
 import lessonRouter from "lessons/lesson.route.v1";
@@ -15,6 +16,7 @@ const router = Router();
 const allRoutes = [];
 
 allRoutes.push(
+  languageRouter,
   userRouter,
   verbRouter,
   lessonRouter,

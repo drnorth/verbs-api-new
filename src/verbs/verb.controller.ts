@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { VerbsService } from "./verb.service";
 import httpStatus from "http-status";
 import ApiError from "utils/ApiError";
+import { User } from "user/user.entity";
 
 export class VerbController {
   static async getAll(req: Request, res: Response, next: NextFunction) {
-    const verbs = await new VerbsService().findAll();
-
+    const user = req.user as User;
+    const verbs = await new VerbsService().findAll(user.languageCode);
     return res.send(verbs);
   }
 
@@ -23,7 +24,8 @@ export class VerbController {
   }
 
   static async findVerb(req: Request, res: Response, next: NextFunction) {
-    const verb = await new VerbsService().findById(req.params.id);
+    const user = req.user as User;
+    const verb = await new VerbsService().findById(req.params.id, user.languageCode);
 
     return res.send(verb);
   }
