@@ -13,8 +13,9 @@
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
     "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed",
     "migrate:create": "ts-node ./node_modules/typeorm/cli.js  migrations:create",
-    "migrate:generate": "ts-node ./node_modules/typeorm/cli.js  migrations:generate",
-    "migrate:run": "ts-node ./node_modules/typeorm/cli.js  migration:run"
+    "migrate:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migrations:generate",
+    "migrate:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run",
+    "migrate:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:revert"
   },
   "author": "",
   "license": "ISC",

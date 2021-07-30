@@ -28,14 +28,6 @@ const Routes: IRouteStructure<
       role: "manageLessons",
     },
     {
-      method: "get",
-      route: "/init",
-      action: "initialLeassons",
-      validate: "emptyValidation",
-      auth: true,
-      role: "data",
-    },
-    {
       method: "post",
       route: "/:id/result",
       action: "setResult",

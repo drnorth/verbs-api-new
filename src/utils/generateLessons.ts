@@ -1,8 +1,8 @@
-import mockTests from "../mock/tests";
+import mockTests from "database/data/verbsPrepTest";
 
-const COUNT = 5;
+const COUNT = 5; // max size in "question", fraction for verbs list
 
-const createLesson = (arr: string[]) => {
+const create = (arr: string[]) => {
   const excess: number = arr.length % COUNT;
   const items: string[] = arr.slice(0, -excess);
   const excessItems: string[] = arr.slice(-excess);
@@ -39,5 +39,8 @@ const createLesson = (arr: string[]) => {
 export const generateLessons = () => {
   const keys = Object.keys(mockTests);
 
-  return keys.map((key) => createLesson(mockTests[key]));
+  return keys.map((key) => create(mockTests[key])) as Record<
+    string,
+    string[]
+  >[];
 };

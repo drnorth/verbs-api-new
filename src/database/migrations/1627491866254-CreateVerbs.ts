@@ -1,10 +1,5 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumn,
-  TableIndex,
-} from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { Difficult } from "types.common/verbs.types";
 
 export class CreateVerbs1627491866254 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -13,35 +8,34 @@ export class CreateVerbs1627491866254 implements MigrationInterface {
       columns: [
         {
           name: "id",
-          type: "int",
+          type: "uuid",
+          isUnique: true,
           isPrimary: true,
           isGenerated: true,
           generationStrategy: "uuid",
+          default: `uuid_generate_v4()`,
         },
         {
           name: "inf",
           type: "varchar",
-          length: "36",
+          length: "255",
         },
         {
           name: "simple",
           type: "varchar",
-          length: "36",
+          length: "255",
         },
         {
           name: "part",
           type: "varchar",
-          length: "36",
-        },
-        {
-          name: "translations",
-          type: "varchar",
-          length: "36",
+          length: "255",
         },
         {
           name: "difficult",
-          type: "varchar",
-          length: "20",
+          type: "verb_difficult_enum",
+          enum: Object.values(Difficult),
+          enumName: "difficult",
+          default: Difficult.EASY,
         },
         {
           name: "coeff",
@@ -50,23 +44,6 @@ export class CreateVerbs1627491866254 implements MigrationInterface {
         },
       ],
     });
-
-    await queryRunner.createIndex(
-      "verb",
-      new TableIndex({
-        name: "IDX_QUESTION_NAME",
-        columnNames: ["id"],
-      })
-    );
-
-    await queryRunner.addColumn(
-      "verb",
-      new TableColumn({
-        name: "coeff",
-        type: "int",
-        isNullable: true,
-      })
-    );
 
     await queryRunner.createTable(table);
   }

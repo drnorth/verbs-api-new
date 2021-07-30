@@ -24,6 +24,7 @@ export class AuthService {
     };
 
     const userService = new UserService();
+
     if (password) {
       findOptionUser = { name: nameOrDeviceId };
     }

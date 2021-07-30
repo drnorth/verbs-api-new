@@ -25,11 +25,11 @@ export class Lesson {
   @Column()
   order: number;
 
-  @Column({ select: false, nullable: true })
-  status?: string;
+  // @Column({ select: false, nullable: true })
+  // status?: string;
 
-  @Column({ select: false, nullable: true })
-  bestAttempt?: number;
+  // @Column({ select: false, nullable: true })
+  // bestAttempt?: number;
 
   @OneToMany(() => Question, (question) => question.lesson)
   questions: Question[];

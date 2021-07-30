@@ -30,7 +30,7 @@ export class User extends BaseEntity {
   @Column({ default: "", select: false })
   salt?: string;
 
-  @Column({ default: "RU-ru" })
+  @Column({ default: "ru-RU" })
   lang?: string;
 
   @Column({ default: false })

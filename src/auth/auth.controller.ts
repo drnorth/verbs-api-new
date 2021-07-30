@@ -30,7 +30,10 @@ export class AuthController {
       //   throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect hash key");
       // }
       return res.send(
-        await new AuthService().login(req.body.lang || "ru", req.body.deviceId)
+        await new AuthService().login(
+          req.body.lang || "ru-RU",
+          req.body.deviceId
+        )
       );
     }
     return res.send(

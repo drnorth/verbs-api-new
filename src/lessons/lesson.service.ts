@@ -1,19 +1,15 @@
-import { getRepository, Between } from "typeorm";
+import { getRepository } from "typeorm";
 import { Lesson } from "lessons/entities/lesson.entity";
 import {
-  ILesson,
   ICreateLesson,
   IGetResulLesson,
   IQuestion,
   QuestionAction,
-  QuestionType,
-  AnswerType,
   StatusLesson,
 } from "types.common/lessons.types";
-import { Difficult, IVerb } from "types.common/verbs.types";
+import { Difficult } from "types.common/verbs.types";
 import ApiError from "utils/ApiError";
 import httpStatus from "http-status";
-import { generateLessons } from "./utils";
 import { QuestionService } from "questions/question.service";
 import { Verb } from "verbs/entities/verb.entity";
 import { OpenedLesson } from "./entities/openedLesson.entity";
@@ -66,21 +62,28 @@ export class LessonsService {
       relations: ["questions"],
     });
     //const verbs = await this.verbRepository.find();
-    
+
     if (!lesson) {
       throw new ApiError(httpStatus.NOT_FOUND, "Not found");
     }
 
-    const language = await this.languageRepository.findOne({code: lang});
+    const language = await this.languageRepository.findOne({ code: lang });
     if (!language) {
       throw new ApiError(httpStatus.NOT_FOUND, "Language not found");
     }
 
-    const questions = lesson.questions.map((question) => ({...question, action: lesson.action}));
+    const questions = lesson.questions.map((question) => ({
+      ...question,
+      action: lesson.action,
+    }));
 
     return {
       ...lesson,
-      questions: generateQuestions(questions, language, lesson.questions.length),
+      questions: generateQuestions(
+        questions,
+        language,
+        lesson.questions.length
+      ),
     };
   }
 
@@ -113,6 +116,7 @@ export class LessonsService {
 
     return lesson;
   }
+
   async openLessons(
     user: User | undefined,
     difficult: Difficult
@@ -220,72 +224,5 @@ export class LessonsService {
       result: percentCorrect,
       isComplete: percentCorrect >= 85,
     };
-  }
-
-  async initialLessons(): Promise<any> {
-    const lessons: ILesson[] = await this.findAllLessons("0");
-    const data = generateLessons();
-
-    const generateQuestion = async (verbs: any, param: any) => {
-      for (const verb of verbs) {
-        await this.questionService.createQuestion({ ...param, verb });
-      }
-    };
-
-    const createLessons = async (level: Difficult, items: any) => {
-      const COUNT_TASKS = 3 * 2 * 3;
-
-      for (const key of Object.keys(items)) {
-        for (const [i] of Array.from({ length: COUNT_TASKS }).entries()) {
-          const action =
-            (i + 1) % 2 === 0 ? QuestionAction.WRITE : QuestionAction.CHOOSE;
-          let answerType = "";
-          let type = QuestionType.LISTEN;
-
-          if ([0, 1, 6, 7, 12, 13].includes(i)) {
-            type = QuestionType.FORM;
-          }
-
-          if ([2, 3, 8, 9, 14, 15].includes(i)) {
-            type = QuestionType.THREE_FORM;
-          }
-
-          if (i < 6) {
-            answerType = AnswerType.INF;
-          }
-
-          if (i >= 6 && i <= 12) {
-            answerType = AnswerType.SIMPLE;
-          }
-
-          if (i > 12) {
-            answerType = AnswerType.PART;
-          }
-
-          const lesson = await this.createLesson({ action, difficult: level });
-
-          await generateQuestion(items[key], {
-            lesson,
-            type,
-            answerType,
-          });
-        }
-      }
-    };
-
-    if (lessons.length) {
-      await this.lessonRepository.delete(lessons.map((e) => e.id));
-    }
-
-    for (const [index, item] of data.entries()) {
-      const level: Difficult =
-        index === 0
-          ? Difficult.EASY
-          : index === 1
-          ? Difficult.MIDDLE
-          : Difficult.HARD;
-
-      await createLessons(level, item);
-    }
   }
 }

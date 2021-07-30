@@ -17,7 +17,7 @@ const Routes: IRouteStructure<
       action: "all",
       validate: "emptyValidation",
       auth: true,
-      role: "getLanguages",
+      // role: "getLanguages",
     },
   ],
 };

@@ -37,16 +37,6 @@ export class LessonsController {
     });
   }
 
-  static async initialLeassons(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const lessons = await new LessonsService().initialLessons();
-
-    return res.status(httpStatus.OK).json(lessons);
-  }
-
   static async setResult(req: Request, res: Response, next: NextFunction) {
     const payload = {
       lessonId: req.params.id,
@@ -66,7 +56,8 @@ export class LessonsController {
   static async getLesson(req: Request, res: Response, next: NextFunction) {
     const user = req.user as User;
     const lesson = await new LessonsService().findByIdLesson(
-      Number(req.params.id), user.languageCode
+      Number(req.params.id),
+      user.languageCode
     );
 
     if (!lesson) throw new ApiError(httpStatus.NOT_FOUND, "Not found");
